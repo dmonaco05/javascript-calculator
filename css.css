@@ -1,0 +1,14 @@
+input#main_input{
+  float: left;
+}
+div.numbers{
+  float: left;
+}
+
+div.math{
+  float: left;
+}
+
+div#answers{
+  float: clear;
+}

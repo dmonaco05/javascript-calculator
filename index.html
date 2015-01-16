@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Javascript Calc.</title>
+  <link rel="stylesheet" href="css.css">
+</head>
+<body>
+  <div id="calc" class="clear_fix">
+    <input type="text" id="main_input">
+    <div class="numbers" id="numbers">
+      <div class="7-9">
+      <button data-number="7" class="numbers">7</button>
+      <button data-number="8" class="numbers">8</button>
+      <button data-number="9" class="numbers">9</button>
+      </div>
+      <div class="4-6">
+      <button data-number="4" class="numbers">4</button>
+      <button data-number="5" class="numbers">5</button>
+      <button data-number="6" class="numbers">6</button>
+      </div>
+      <div class="1-3">
+      <button data-number="1" class="numbers">1</button>
+      <button data-number="2" class="numbers">2</button>
+      <button data-number="3" class="numbers">3</button>
+      </div>
+      <div class="btm">
+      <button data-number="0" class="numbers">0</button>
+      <button data-number="." class="numbers">.</button>
+      <button id="equals">=</button>
+      </div>
+    </div>
+    <div class="math" id="math">
+      <div class="clear">
+      <button data-type="clear">Clear</button>
+      </div>
+      <div class="x/">
+      <button data-type="divide">/</button>
+      <button data-type="multiply">X</button>
+      </div>
+      <div class="-+">
+      <button data-type="minus">-</button>
+      <button data-type="addition">+</button>
+      </div>
+    </div>
+    <div id="answers">
+      <p>Results:</p>
+      <ul id="results">
+
+      </ul>
+    </div>
+  </div>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>
+  /*
+    Create Variables
+  */
+    var numbers_button = $('#numbers'),
+      math_button = $('#math'),
+      the_numb_btn = $('.numbers', numbers_button),
+      the_math_btn = math_button.find('button'),
+      equals = $('#equals'),
+      reset = false,
+      numb1,
+      numb2,
+      math_type,
+      results = $('#results'),
+      main_input = $('#main_input');
+
+
+      //Setting up the onclick event listener for all those buttons
+      the_numb_btn.on('click', function(e){
+        //All this code happens if a button with a class of numbers is clicked
+
+        //Declaring new variables
+
+        // the keyword this is referencing the button that is clicked
+        // which variable stores the value of the attribute "data-number"
+        var which = $(this).data('number'),
+
+          //field_value and new_value are variables that only exist in the onclick function
+          field_value,
+          new_value;
+
+        if(reset === false){
+          //field_value gets the value of the input field. main_input is a variable declared earlier
+          field_value = main_input.val(),
+
+          /*
+           We are combining the value of the input and the button that is pressed.
+           Since values of input fields are strings the numbers are not added together put together via string concatenation
+
+           Example "5"+"5" = "55";
+           */
+          new_value = field_value + which;
+        }else{
+          //new_value just equals the button that was clicked
+          //Done because we are creating the second number in the function
+          new_value = which;
+          //set reset to false
+          reset = false;
+        }
+
+        //Make the value of the input field the value of variable new_value
+        main_input.val(new_value);
+
+        //Prevents default button click behavior.
+        //Honestly probably not needed
+        e.preventDefault();
+      });
+
+
+
+      //Setting up the onclick event listener for all those buttons
+      the_math_btn.on('click', function(e){
+        //Set variable math_type to the value of data-type
+        //divide, multiply, minus, addition
+        math_type = $(this).data('type');
+
+        //if math type not equal to clear
+        if(math_type !== "clear"){
+          // set the global variable of numb1 to the value of the main_input
+          // parseFloat changes the string to a number
+          numb1 = parseFloat(main_input.val());
+          reset = true;
+        }else{
+          /*
+          if clear is pressed we remove the value from the field
+          reset the variable numb1 in case it was set.
+          */
+          main_input.val("");
+          numb1 = null;
+        }
+
+        e.preventDefault();
+      });
+
+
+    //This event is fired when the equals button is clicked
+    equals.on('click', function(e){
+      // if numb1 has no value nothing happens
+      // if it does have value do the code below
+      if(numb1 != null){
+        // numb2 is the value from the input field, turned into a number
+        numb2 = parseFloat(main_input.val());
+        var new_value,
+          equation;
+
+        // The conditionals below check the value of math_type and does
+        // the appropriate equation.
+        // new_value is the answer of the equation
+        // The variable equation is a string of what created the value in the new_value
+        if(math_type === "divide"){
+          new_value = numb1 / numb2;
+          equation = numb1 + " / " + numb2 + " = " + new_value;
+        }else if(math_type === "multiply"){
+          new_value = numb1 * numb2;
+          equation = numb1 + " * " + numb2 + " = " + new_value;;
+        }else if(math_type === "minus"){
+          new_value = numb1 - numb2;
+          equation = numb1 + " - " + numb2 + " = " + new_value;;
+        }else if(math_type === "addition"){
+          new_value = numb1 + numb2;
+          equation = numb1 + " + " + numb2 + " = " + new_value;;
+        }
+
+        // Set the value of the main input to the answer of the equation
+        main_input.val(new_value);
+
+        //This code below will create a new li element and display the equation on the page.
+        //Creates the li and stores it as a variable
+
+        results.prepend('<li>'+equation+'</li>');
+        //set numb1 back to null
+        numb1 = null;
+      }
+      e.preventDefault();
+    })
+  </script>
+</body>
+</html>
